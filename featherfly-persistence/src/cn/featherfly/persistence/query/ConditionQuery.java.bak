@@ -1,0 +1,125 @@
+
+package cn.featherfly.persistence.query;
+
+import cn.featherfly.common.db.operator.LogicOperator;
+import cn.featherfly.common.db.operator.QueryOperator;
+
+/**
+ * <p>
+ * 条件查询接口
+ * </p>
+ *
+ * @param <E> 类型信息
+ *
+ * @author 钟冀
+ */
+public interface ConditionQuery<E> extends Query<E> {
+	/**
+	 * <p>
+	 * 添加条件
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param queryOperator 条件运算符
+	 * @param logicOperator 逻辑运算符
+	 */
+	void addCondition(String name, Object value, QueryOperator queryOperator
+			, LogicOperator logicOperator);
+
+	/**
+	 * <p>
+	 * 小于
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param logicOperator 逻辑运算符
+	 */
+	void lt(String name, Object value, LogicOperator logicOperator);
+
+	/**
+	 * <p>
+	 * 小于等于
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param logicOperator 逻辑运算符
+	 */
+	void le(String name, Object value, LogicOperator logicOperator);
+
+	/**
+	 * <p>
+	 * 等于
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param logicOperator 逻辑运算符
+	 */
+	void eq(String name, Object value, LogicOperator logicOperator);
+
+	/**
+	 * <p>
+	 * 大于等于
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param logicOperator 逻辑运算符
+	 */
+	void ge(String name, Object value, LogicOperator logicOperator);
+
+	/**
+	 * <p>
+	 * 大于
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param logicOperator 逻辑运算符
+	 */
+	void gt(String name, Object value, LogicOperator logicOperator);
+
+
+	/**
+	 * <p>
+	 * 开始于
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param logicOperator 逻辑运算符
+	 */
+	void sw(String name, Object value, LogicOperator logicOperator);
+
+	/**
+	 * <p>
+	 * 包含
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param logicOperator 逻辑运算符
+	 */
+	void co(String name, Object value, LogicOperator logicOperator);
+
+	/**
+	 * <p>
+	 * 结束于
+	 * </p>
+	 * @param name 名称
+	 * @param value 值
+	 * @param logicOperator 逻辑运算符
+	 */
+	void ew(String name, Object value, LogicOperator logicOperator);
+
+	/**
+	 * <p>
+	 * 添加升序条件
+	 * </p>
+	 * @param names 排序名称
+	 */
+	void asc(String...names);
+
+	/**
+	 * <p>
+	 * 添加降序条件
+	 * </p>
+	 * @param names 排序名称
+	 */
+	void desc(String...names);
+}
