@@ -532,6 +532,32 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Integer countForInt(String tableName,
+			ConditionBuilder conditionBuilder) {
+		conditionBuilder.setBuildWithWhere(true);
+		String condition = conditionBuilder.build();
+		String sql = "select count(*) from " + tableName
+				+ condition;
+		logger.debug("tableName : {}, condition : {}", tableName, condition);
+		return findForInt(sql, conditionBuilder.getParams());
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Long countForLong(String tableName, ConditionBuilder conditionBuilder) {
+		conditionBuilder.setBuildWithWhere(true);
+		String condition = conditionBuilder.build();
+		String sql = "select count(*) from " + tableName
+				+ condition;
+		logger.debug("tableName : {}, condition : {}", tableName, condition);
+		return findForLong(sql, conditionBuilder.getParams());
+	
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Integer findForInt(String sql, Map<String, Object> params) {
 		logger.debug("sql : {}", sql);
 		return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
@@ -1173,4 +1199,5 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 		}
 		return params.toArray();
 	}
+	
 }

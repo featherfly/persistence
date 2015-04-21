@@ -274,6 +274,24 @@ public interface JdbcPersistence extends PersistenceBatch{
 	<E> E find(String sql, RowMapper<E> rowMapper, List<Object> params);
 	/**
 	 * <p>
+	 * count查询语句的快捷方式
+	 * </p>
+	 * @param tableName 需要统计的表名
+	 * @param conditionBuilder 条件构造器
+	 * @return 统计数
+	 */
+	Integer countForInt(String tableName, ConditionBuilder conditionBuilder);
+	/**
+	 * <p>
+	 * count查询语句的快捷方式
+	 * </p>
+	 * @param tableName 需要统计的表名
+	 * @param conditionBuilder 条件构造器
+	 * @return 统计数
+	 */
+	Long countForLong(String tableName, ConditionBuilder conditionBuilder);
+	/**
+	 * <p>
 	 * 查询唯一数据.
 	 * </p>
 	 * @param sql 查询sql

@@ -1,5 +1,7 @@
 // 下一步加入TableQuery对象
-
+2015-04-08 1.2.5
+	1.加入countForInt和countForLong方法
+	
 2015-04-08 1.2.4
 	1.BeanPropertyRowMapper切换使用db包中的jdbcutils，因为这个支持枚举转换
 
