@@ -638,10 +638,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	@Override
 	public List<Map<String, Object>> findList(String sql, Pagination pagination,
 			Map<String, Object> params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<Map<String, Object>> wrapper = new PaginationWrapper<Map<String, Object>>(pagination);
 		return findList(sql, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -651,10 +651,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	@Override
 	public List<Map<String, Object>> findList(String sql, Pagination pagination
 			, Object[] params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<Map<String, Object>> wrapper = new PaginationWrapper<Map<String, Object>>(pagination);
 		return findList(sql, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -664,10 +664,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	@Override
 	public List<Map<String, Object>> findList(String sql, Pagination pagination,
 			List<Object> params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<Map<String, Object>> wrapper = new PaginationWrapper<Map<String, Object>>(pagination);
 		return findList(sql, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -791,10 +791,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	@Override
 	public <E> List<E> findList(String sql, Class<E> mappingType, Pagination pagination
 			, Map<String, Object> params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
 		return findList(sql, mappingType, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -803,10 +803,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	 */
 	@Override
 	public <E> List<E> findList(String sql, Class<E> mappingType, Pagination pagination, Object[] params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
 		return findList(sql, mappingType, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -815,10 +815,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	 */
 	@Override
 	public <E> List<E> findList(String sql, Class<E> mappingType, Pagination pagination, List<Object> params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
 		return findList(sql, mappingType, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -946,10 +946,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	@Override
 	public <E> List<E> findList(String sql, RowMapper<E> rowMapper, Pagination pagination
 			, Map<String, Object> params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
 		return findList(sql, rowMapper, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -958,10 +958,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	 */
 	@Override
 	public <E> List<E> findList(String sql, RowMapper<E> rowMapper, Pagination pagination, Object[] params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
 		return findList(sql, rowMapper, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -970,10 +970,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 	 */
 	@Override
 	public <E> List<E> findList(String sql, RowMapper<E> rowMapper, Pagination pagination, List<Object> params) {
-		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-		if (total != null) {
-			pagination.setTotal(total);
-		}
+//		Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//		if (total != null) {
+//			pagination.setTotal(total);
+//		}
 		PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
 		return findList(sql, rowMapper, wrapper.getStart(), wrapper.getLimit(), params);
 	}
@@ -1192,8 +1192,15 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
 			simpleORMFactory.setDataSource(dataSource);
 		}
 	}
-
-	private Object[] toArray(List<Object> params) {
+	
+	/**
+     * 返回simpleORMFactory
+     * @return simpleORMFactory
+     */
+    public SimpleORMFactory getSimpleORMFactory() {
+        return simpleORMFactory;
+    }
+    private Object[] toArray(List<Object> params) {
 		if (params == null) {
 			params = new ArrayList<Object>();
 		}
