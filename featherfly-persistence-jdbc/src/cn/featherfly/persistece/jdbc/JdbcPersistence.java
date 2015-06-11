@@ -423,6 +423,40 @@ public interface JdbcPersistence extends PersistenceBatch{
 	 * 列表内放的MAP.
 	 * </p>
 	 * @param sql 查询sql
+	 * @param pagination 分页模型
+	 * @param params 参数
+	 * @return  分页对象
+	 */
+	PaginationResults<Map<String, Object>> findPage(String sql, Pagination pagination
+	        , Map<String, Object> params);
+	/**
+	 * <p>
+	 * 查询列表.
+	 * 列表内放的MAP.
+	 * </p>
+	 * @param sql 查询sql
+	 * @param pagination 分页模型
+	 * @param params 参数
+	 * @return  分页对象
+	 */
+	PaginationResults<Map<String, Object>> findPage(String sql, Pagination pagination, Object[] params);
+	/**
+	 * <p>
+	 * 查询列表.
+	 * 列表内放的MAP.
+	 * </p>
+	 * @param sql 查询sql
+	 * @param pagination 分页模型
+	 * @param params 参数
+	 * @return  分页对象
+	 */
+	PaginationResults<Map<String, Object>> findPage(String sql, Pagination pagination, List<Object> params);
+	/**
+	 * <p>
+	 * 查询列表.
+	 * 列表内放的MAP.
+	 * </p>
+	 * @param sql 查询sql
 	 * @param start 起始位置
 	 * @param limit 返回数
 	 * @param params 参数
@@ -611,6 +645,45 @@ public interface JdbcPersistence extends PersistenceBatch{
 	 * @return 对象列表
 	 */
 	<E> List<E> findList(String sql, Class<E> mappingType, Pagination pagination, List<Object> params);
+	/**
+     * <p>
+     * 查询列表.
+     * 列表内放的是记录映射类的实例对象.
+     * </p>
+     * @param <E> 对象类型
+     * @param sql 查询sql
+     * @param mappingType 记录映射类
+     * @param pagination 分页模型
+     * @param params 参数
+     * @return 分页对象
+     */
+    <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, Pagination pagination, Map<String, Object> params);
+    /**
+     * <p>
+     * 查询列表.
+     * 列表内放的是记录映射类的实例对象.
+     * </p>
+     * @param <E> 对象类型
+     * @param sql 查询sql
+     * @param mappingType 记录映射类
+     * @param pagination 分页模型
+     * @param params 参数
+     * @return 分页对象
+     */
+    <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, Pagination pagination, Object[] params);
+    /**
+     * <p>
+     * 查询列表.
+     * 列表内放的是记录映射类的实例对象.
+     * </p>
+     * @param <E> 对象类型
+     * @param sql 查询sql
+     * @param mappingType 记录映射类
+     * @param pagination 分页模型
+     * @param params 参数
+     * @return 分页对象
+     */
+    <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, Pagination pagination, List<Object> params);
 	/**
 	 * <p>
 	 * 查询列表.

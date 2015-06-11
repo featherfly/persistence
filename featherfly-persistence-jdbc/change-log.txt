@@ -1,4 +1,7 @@
 // 下一步加入TableQuery对象
+2015-06-11 1.2.6
+    1.加入6个findPage方法
+    
 2015-04-08 1.2.5
 	1.加入countForInt和countForLong方法
 	2.findList返回列表的方法去掉自动统计total逻辑
