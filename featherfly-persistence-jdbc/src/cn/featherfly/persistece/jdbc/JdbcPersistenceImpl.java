@@ -24,6 +24,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import cn.featherfly.common.db.PaginationWrapper;
 import cn.featherfly.common.db.SqlUtils;
 import cn.featherfly.common.db.builder.ConditionBuilder;
+import cn.featherfly.common.db.data.Execution;
 import cn.featherfly.common.db.dialect.Dialect;
 import cn.featherfly.common.lang.ArrayUtils;
 import cn.featherfly.common.lang.ClassUtils;
@@ -723,18 +724,13 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
      */
     @Override
     public PaginationResults<Map<String, Object>> findPage(String sql,
-            Pagination pagination, Map<String, Object> params) {
-        Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        if (total != null) {
-            pagination.setTotal(total);
-        }
+            Pagination pagination, Map<String, Object> params) {        
         List<Map<String, Object>> list = findList(sql, pagination, params);
-        SimplePagination<Map<String, Object>> paginationResult = new SimplePagination<Map<String, Object>>();
-        paginationResult.setPageResults(list);
-        paginationResult.setPageSize(pagination.getPageSize());
-        paginationResult.setPageNumber(pagination.getPageNumber());
-        paginationResult.setTotal(total);
-        return paginationResult;
+        Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
+//        if (total != null) {
+//            pagination.setTotal(total);
+//        }
+        return createPaginationResults(list, pagination, total);
     }
 
     /**
@@ -744,16 +740,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     public PaginationResults<Map<String, Object>> findPage(String sql,
             Pagination pagination, Object[] params) {
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        if (total != null) {
-            pagination.setTotal(total);
-        }
+//        if (total != null) {
+//            pagination.setTotal(total);
+//        }
         List<Map<String, Object>> list = findList(sql, pagination, params);
-        SimplePagination<Map<String, Object>> paginationResult = new SimplePagination<Map<String, Object>>();
-        paginationResult.setPageResults(list);
-        paginationResult.setPageSize(pagination.getPageSize());
-        paginationResult.setPageNumber(pagination.getPageNumber());
-        paginationResult.setTotal(total);
-        return paginationResult;
+        return createPaginationResults(list, pagination, total);
     }
 
     /**
@@ -762,7 +753,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     @Override
     public PaginationResults<Map<String, Object>> findPage(String sql,
             Pagination pagination, List<Object> params) {
-        return findPage(sql, pagination, params.toArray());
+        return findPage(sql, pagination, toArray(params));
     }
 
     /**
@@ -772,16 +763,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
             Pagination pagination, Map<String, Object> params) {
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        if (total != null) {
-            pagination.setTotal(total);
-        }
+//        if (total != null) {
+//            pagination.setTotal(total);
+//        }
         List<E> list = findList(sql, mappingType, pagination, params);
-        SimplePagination<E> paginationResult = new SimplePagination<E>();
-        paginationResult.setPageResults(list);
-        paginationResult.setPageSize(pagination.getPageSize());
-        paginationResult.setPageNumber(pagination.getPageNumber());
-        paginationResult.setTotal(total);
-        return paginationResult;
+        return createPaginationResults(list, pagination, total);
     }
 
     /**
@@ -791,16 +777,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
             Pagination pagination, Object[] params) {
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        if (total != null) {
-            pagination.setTotal(total);
-        }
+//        if (total != null) {
+//            pagination.setTotal(total);
+//        }
         List<E> list = findList(sql, mappingType, pagination, params);
-        SimplePagination<E> paginationResult = new SimplePagination<E>();
-        paginationResult.setPageResults(list);
-        paginationResult.setPageSize(pagination.getPageSize());
-        paginationResult.setPageNumber(pagination.getPageNumber());
-        paginationResult.setTotal(total);
-        return paginationResult;
+        return createPaginationResults(list, pagination, total);
     }
 
     /**
@@ -809,7 +790,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     @Override
     public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
             Pagination pagination, List<Object> params) {
-        return findPage(sql, mappingType, pagination, params.toArray());
+        return findPage(sql, mappingType, pagination, toArray(params));
     }
 
     /**
@@ -895,6 +876,18 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     public <E> List<E> findList(Class<E> mappingType, ConditionBuilder builder) {
         builder.setDialect(dialect);
         return simpleORMFactory.getSimpleORM(mappingType).list(builder);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <E> PaginationResults<E> findPage(Class<E> mappingType,
+            ConditionBuilder builder) {
+        List<E> list = findList(mappingType, builder);
+        Execution execution = simpleORMFactory.getSimpleORM(mappingType).getQueryExecution(builder);
+        Integer total = findForInt(SqlUtils.convertSelectToCount(execution.getSql()), execution.getParams());
+        return createPaginationResults(list, builder.getPagination(), total);
     }
 
     /**
@@ -1403,7 +1396,16 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     public SimpleORMFactory getSimpleORMFactory() {
         return simpleORMFactory;
     }
-
+    
+    private <E> PaginationResults<E> createPaginationResults(Iterable<E> results, Pagination pagination, Integer total) {
+        SimplePagination<E> paginationResult = new SimplePagination<E>();
+        paginationResult.setPageResults(results);
+        paginationResult.setPageSize(pagination.getPageSize());
+        paginationResult.setPageNumber(pagination.getPageNumber());
+        paginationResult.setTotal(total);
+        return paginationResult;
+    }
+    
     private Object[] toArray(List<Object> params) {
         if (params == null) {
             params = new ArrayList<Object>();

@@ -533,7 +533,18 @@ public interface JdbcPersistence extends PersistenceBatch{
 	 * @param builder 条件构造器
 	 * @return 对象列表
 	 */
-	<E> List<E> findList(Class<E> mappingType, ConditionBuilder builder);	
+	<E> List<E> findList(Class<E> mappingType, ConditionBuilder builder);
+	/**
+	 * <p>
+	 * 查询列表.
+	 * 列表内放的是记录映射类的实例对象.
+	 * </p>
+	 * @param <E> 对象类型
+	 * @param mappingType 记录映射类
+	 * @param builder 条件构造器
+	 * @return 分页对象
+	 */
+	<E> PaginationResults<E> findPage(Class<E> mappingType, ConditionBuilder builder);
 //	/**
 //	 * <p>
 //	 * 查询列表.
