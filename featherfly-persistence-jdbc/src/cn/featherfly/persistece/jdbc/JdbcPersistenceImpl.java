@@ -887,10 +887,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
         List<E> list = findList(mappingType, builder);
         // 查询完了以后把转换count语句的干扰去掉
         builder.clearOrders();
+        Pagination p = builder.getPagination();
         builder.setPagination(null);
         Execution execution = simpleORMFactory.getSimpleORM(mappingType).getQueryExecution(builder);
         Integer total = findForInt(SqlUtils.convertSelectToCount(execution.getSql()), execution.getParams());
-        return createPaginationResults(list, builder.getPagination(), total);
+        return createPaginationResults(list, p, total);
     }
 
     /**
