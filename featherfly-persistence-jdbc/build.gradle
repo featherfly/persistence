@@ -97,7 +97,7 @@ uploadArchives {
             pom.project {  
                 name project.name  
                 packaging 'jar'
-                description 'database tool'  
+                description 'persistence jdbc impl'  
                 url 'https://github.com/featherfly/persistence.git'  
   
                 scm {  
@@ -142,7 +142,7 @@ test {
 jar {
     manifest.attributes 'Build-Name': archivesBaseName
 	manifest.attributes 'Build-By': "zhong ji"
-    manifest.attributes 'Tool' : "gradle"
+    manifest.attributes 'Build-Tool' : "gradle " + gradle.gradleVersion
     manifest.attributes 'Build-Jdk' : ant.properties['java.runtime.version']
     manifest.attributes 'Bundle-License': 'http://www.apache.org/licenses/LICENSE-2.0'
 }

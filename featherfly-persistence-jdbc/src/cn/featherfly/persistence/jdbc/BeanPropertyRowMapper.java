@@ -1,5 +1,5 @@
 
-package cn.featherfly.persistece.jdbc;
+package cn.featherfly.persistence.jdbc;
 
 import java.beans.PropertyDescriptor;
 import java.sql.ResultSet;

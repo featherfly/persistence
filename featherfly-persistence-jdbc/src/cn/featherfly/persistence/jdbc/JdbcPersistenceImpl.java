@@ -1,4 +1,4 @@
-package cn.featherfly.persistece.jdbc;
+package cn.featherfly.persistence.jdbc;
 
 import java.io.Serializable;
 import java.sql.ResultSet;

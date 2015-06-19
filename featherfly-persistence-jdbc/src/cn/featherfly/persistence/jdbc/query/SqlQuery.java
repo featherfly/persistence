@@ -1,11 +1,11 @@
 
-package cn.featherfly.persistece.jdbc.query;
+package cn.featherfly.persistence.jdbc.query;
 
 import java.util.List;
 
 import cn.featherfly.common.db.SqlUtils;
 import cn.featherfly.common.db.builder.ConditionBuildUtils;
-import cn.featherfly.persistece.jdbc.JdbcPersistence;
+import cn.featherfly.persistence.jdbc.JdbcPersistence;
 import cn.featherfly.persistence.query.AbstractTypeQurey;
 
 /**
