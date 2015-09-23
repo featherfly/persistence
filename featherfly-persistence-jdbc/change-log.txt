@@ -1,4 +1,7 @@
 // 下一步加入TableQuery对象
+2015-09-23 1.2.8
+    1.修正部分ConditionBuilder未设置dialect问题
+
 2015-06-19 1.2.7
     1.修正包名错误的BUG
 

@@ -451,6 +451,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
      */
     @Override
     public <E> E find(Class<E> mappingType, ConditionBuilder builder) {
+        builder.setDialect(dialect);
         return simpleORMFactory.getSimpleORM(mappingType).unique(builder);
     }
 
@@ -563,6 +564,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     public Integer countForInt(String tableName,
             ConditionBuilder conditionBuilder) {
         conditionBuilder.setBuildWithWhere(true);
+        conditionBuilder.setDialect(dialect);
         String condition = conditionBuilder.build();
         String sql = "select count(*) from " + tableName + condition;
         logger.debug("tableName : {}, condition : {}", tableName, condition);
@@ -575,6 +577,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     @Override
     public Long countForLong(String tableName, ConditionBuilder conditionBuilder) {
         conditionBuilder.setBuildWithWhere(true);
+        conditionBuilder.setDialect(dialect);
         String condition = conditionBuilder.build();
         String sql = "select count(*) from " + tableName + condition;
         logger.debug("tableName : {}, condition : {}", tableName, condition);
@@ -887,6 +890,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
         List<E> list = findList(mappingType, builder);
         // 查询完了以后把转换count语句的干扰去掉
         builder.clearOrders();
+        builder.setDialect(dialect);
         Pagination p = builder.getPagination();
         builder.setPagination(null);
         Execution execution = simpleORMFactory.getSimpleORM(mappingType).getQueryExecution(builder);
