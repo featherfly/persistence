@@ -1,4 +1,7 @@
 // 下一步加入TableQuery对象
+2015-09-25 1.2.9
+    1.修正countForInt(tableName, conditionBuilder), countForInt(tableName, conditionBuilder)条件链接未加空格错误
+    
 2015-09-23 1.2.8
     1.修正部分ConditionBuilder未设置dialect问题
 

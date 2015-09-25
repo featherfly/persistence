@@ -23,6 +23,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import cn.featherfly.common.db.PaginationWrapper;
 import cn.featherfly.common.db.SqlUtils;
+import cn.featherfly.common.db.builder.ConditionBuildUtils;
 import cn.featherfly.common.db.builder.ConditionBuilder;
 import cn.featherfly.common.db.data.Execution;
 import cn.featherfly.common.db.dialect.Dialect;
@@ -566,9 +567,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
         conditionBuilder.setBuildWithWhere(true);
         conditionBuilder.setDialect(dialect);
         String condition = conditionBuilder.build();
-        String sql = "select count(*) from " + tableName + condition;
+        StringBuilder sql = new StringBuilder("select count(*) from");
+        ConditionBuildUtils.appendCondition(sql, tableName);
+        ConditionBuildUtils.appendCondition(sql, condition);
         logger.debug("tableName : {}, condition : {}", tableName, condition);
-        return findForInt(sql, conditionBuilder.getParams());
+        return findForInt(sql.toString(), conditionBuilder.getParams());
     }
 
     /**
@@ -579,9 +582,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
         conditionBuilder.setBuildWithWhere(true);
         conditionBuilder.setDialect(dialect);
         String condition = conditionBuilder.build();
-        String sql = "select count(*) from " + tableName + condition;
+        StringBuilder sql = new StringBuilder("select count(*) from");
+        ConditionBuildUtils.appendCondition(sql, tableName);
+        ConditionBuildUtils.appendCondition(sql, condition);
         logger.debug("tableName : {}, condition : {}", tableName, condition);
-        return findForLong(sql, conditionBuilder.getParams());
+        return findForLong(sql.toString(), conditionBuilder.getParams());
 
     }
 
