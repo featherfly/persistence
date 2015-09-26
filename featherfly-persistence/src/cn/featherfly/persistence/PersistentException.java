@@ -2,7 +2,7 @@ package cn.featherfly.persistence;
 
 import java.util.Locale;
 
-import cn.featherfly.common.exception.StandardResourceBundleException;
+import cn.featherfly.common.exception.LocalizedException;
 
 
 /**
@@ -12,7 +12,7 @@ import cn.featherfly.common.exception.StandardResourceBundleException;
  *
  * @author 钟冀
  */
-public class PersistentException extends StandardResourceBundleException {
+public class PersistentException extends LocalizedException {
 
 	private static final long serialVersionUID = 4425897945460700161L;
 
