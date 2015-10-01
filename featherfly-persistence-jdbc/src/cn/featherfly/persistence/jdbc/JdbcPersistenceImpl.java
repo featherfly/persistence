@@ -1,6 +1,7 @@
 package cn.featherfly.persistence.jdbc;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -642,6 +643,61 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     @Override
     public Long findForLong(String sql, List<Object> params) {
         return findForLong(sql, toArray(params));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BigDecimal findForBigDecimal(String sql,
+            Map<String, Object> params) {
+        logger.debug("sql : {}", sql);
+        return namedParameterJdbcTemplate.queryForObject(sql, params,
+                BigDecimal.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BigDecimal findForBigDecimal(String sql, Object[] params) {
+        logger.debug("sql : {}", sql);
+        return jdbcTemplate.queryForObject(sql, params, BigDecimal.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BigDecimal findForBigDecimal(String sql, List<Object> params) {
+        return findForBigDecimal(sql, toArray(params));
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String findForString(String sql,
+            Map<String, Object> params) {
+        logger.debug("sql : {}", sql);
+        return namedParameterJdbcTemplate.queryForObject(sql, params,
+                String.class);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String findForString(String sql, Object[] params) {
+        logger.debug("sql : {}", sql);
+        return jdbcTemplate.queryForObject(sql, params, String.class);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String findForString(String sql, List<Object> params) {
+        return findForString(sql, toArray(params));
     }
 
     /**

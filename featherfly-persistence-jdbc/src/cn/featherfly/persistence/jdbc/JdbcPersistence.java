@@ -1,6 +1,7 @@
 package cn.featherfly.persistence.jdbc;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -344,6 +345,60 @@ public interface JdbcPersistence extends PersistenceBatch{
 	 * @return 对象列表
 	 */
 	Long findForLong(String sql, List<Object> params);
+	/**
+	 * <p>
+	 * 查询唯一数据.
+	 * </p>
+	 * @param sql 查询sql
+	 * @param params 参数
+	 * @return 对象列表
+	 */
+	BigDecimal findForBigDecimal(String sql, Map<String, Object> params);
+	/**
+	 * <p>
+	 * 查询唯一数据.
+	 * </p>
+	 * @param sql 查询sql
+	 * @param params 参数
+	 * @return 对象列表
+	 */
+	BigDecimal findForBigDecimal(String sql, Object[] params);
+	/**
+	 * <p>
+	 * 查询唯一数据.
+	 * </p>
+	 * @param sql 查询sql
+	 * @param params 参数
+	 * @return 对象列表
+	 */
+	BigDecimal findForBigDecimal(String sql, List<Object> params);
+	/**
+	 * <p>
+	 * 查询唯一数据.
+	 * </p>
+	 * @param sql 查询sql
+	 * @param params 参数
+	 * @return 对象列表
+	 */
+	String findForString(String sql, Map<String, Object> params);
+	/**
+	 * <p>
+	 * 查询唯一数据.
+	 * </p>
+	 * @param sql 查询sql
+	 * @param params 参数
+	 * @return 对象列表
+	 */
+	String findForString(String sql, Object[] params);
+	/**
+	 * <p>
+	 * 查询唯一数据.
+	 * </p>
+	 * @param sql 查询sql
+	 * @param params 参数
+	 * @return 对象列表
+	 */
+	String findForString(String sql, List<Object> params);
 	/**
 	 * <p>
 	 * 查询列表.
