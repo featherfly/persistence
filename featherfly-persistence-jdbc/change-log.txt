@@ -1,5 +1,8 @@
 // 下一步加入TableQuery对象
 
+2015-12-10 1.2.12
+    1.修复persistence.update(String, Map, Map)的BUG
+    
 2015-12-10 1.2.11
     1.修复persistence.update(String, Map, Map)的BUG
 
