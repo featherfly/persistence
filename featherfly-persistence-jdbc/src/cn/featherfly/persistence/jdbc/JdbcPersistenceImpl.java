@@ -381,25 +381,36 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     public int update(String tableName, Map<String, Object> params,
             Map<String, Object> conditions) {
         StringBuilder sql = new StringBuilder();
-        sql.append("update ").append(tableName);
+        sql.append("update ").append(tableName);        
         if (LangUtils.isNotEmpty(params)) {
-            sql.append(" set ");
+            sql.append(" set "); 
+            int index = 0;
             for (String key : params.keySet()) {
+                if (index > 0) {
+                    sql.append(", ");
+                }
                 sql.append(key).append(" = :").append(key);
+                index++;
             }
         }
+        Map<String, Object> newCondition = new HashMap<>();
         if (LangUtils.isNotEmpty(conditions)) {
             sql.append(" where ");
+            int index = 0;
             for (String key : conditions.keySet()) {
-                String conditionNamedParam = ":condition_" + key;
+                if (index > 0) {
+                    sql.append(" and ");
+                }
+                String conditionNamedParam = ":_condition_" + key;
                 sql.append(key).append(" = ").append(conditionNamedParam);
-                Object value = conditions.get(key);
-                conditions.remove(key);
-                conditions.put(conditionNamedParam, value);
+                Object value = conditions.get(key);                
+                newCondition.put(conditionNamedParam, value);
+                index++;                
             }
         }
-        params.putAll(conditions);
+        params.putAll(newCondition);
         logger.debug("sql : {}", sql);
+        logger.debug("params : {}", params);
         return namedParameterJdbcTemplate.update(sql.toString(), params);
     }
 
