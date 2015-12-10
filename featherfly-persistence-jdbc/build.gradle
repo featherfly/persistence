@@ -23,7 +23,8 @@ sourceSets {
 
 ext {
 	compileDependencies =[
-    	'cn.featherfly:featherfly-persistence:latest.integration'
+    	'cn.featherfly:featherfly-common:latest.integration'
+    	,'cn.featherfly:featherfly-persistence:latest.integration'
     	,'cn.featherfly:featherfly-sorm:latest.integration'
     	,'org.springframework:spring-jdbc:4.1.6.RELEASE'
     	,'org.springframework:spring-tx:4.1.6.RELEASE'

@@ -297,6 +297,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
      */
     @Override
     public int execute(String sql, Map<String, Object> params) {
+        logger.debug("sql : {}", sql);
         return namedParameterJdbcTemplate.update(sql, params);
     }
 
@@ -305,6 +306,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
      */
     @Override
     public int execute(String sql, Object[] params) {
+        logger.debug("sql : {}", sql);
         return jdbcTemplate.update(sql, params);
     }
 
@@ -313,6 +315,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
      */
     @Override
     public int execute(String sql, List<Object> params) {
+        logger.debug("sql : {}", sql);
         return execute(sql, toArray(params));
     }
 
@@ -381,7 +384,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
         sql.append("update ").append(tableName);
         if (LangUtils.isNotEmpty(params)) {
             sql.append(" set ");
-            for (String key : conditions.keySet()) {
+            for (String key : params.keySet()) {
                 sql.append(key).append(" = :").append(key);
             }
         }
@@ -396,6 +399,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
             }
         }
         params.putAll(conditions);
+        logger.debug("sql : {}", sql);
         return namedParameterJdbcTemplate.update(sql.toString(), params);
     }
 
@@ -418,6 +422,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
                 index++;
             }
         }
+        logger.debug("sql : {}", sql);
         return namedParameterJdbcTemplate.update(sql.toString(),
                 columnKeyAndValue);
     }
