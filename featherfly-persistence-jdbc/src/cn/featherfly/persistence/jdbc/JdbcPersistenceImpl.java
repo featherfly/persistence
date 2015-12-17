@@ -401,11 +401,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
                 if (index > 0) {
                     sql.append(" and ");
                 }
-                String conditionNamedParam = ":_condition_" + key;
-                sql.append(key).append(" = ").append(conditionNamedParam);
-                Object value = conditions.get(key);                
+                String conditionNamedParam = "_condition_" + key;
+                sql.append(key).append(" = :").append(conditionNamedParam);
+                Object value = conditions.get(key);
                 newCondition.put(conditionNamedParam, value);
-                index++;                
+                index++;
             }
         }
         params.putAll(newCondition);
