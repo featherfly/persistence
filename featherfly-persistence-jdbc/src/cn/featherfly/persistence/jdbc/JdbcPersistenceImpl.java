@@ -381,6 +381,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
     public int update(String tableName, Map<String, Object> params,
             Map<String, Object> conditions) {
         StringBuilder sql = new StringBuilder();
+        Map<String, Object> newParams = new HashMap<>();
         sql.append("update ").append(tableName);        
         if (LangUtils.isNotEmpty(params)) {
             sql.append(" set "); 
@@ -408,10 +409,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
                 index++;
             }
         }
-        params.putAll(newCondition);
+        newParams.putAll(params);
+        newParams.putAll(newCondition);
         logger.debug("sql : {}", sql);
-        logger.debug("params : {}", params);
-        return namedParameterJdbcTemplate.update(sql.toString(), params);
+        logger.debug("params : {}", newParams);
+        return namedParameterJdbcTemplate.update(sql.toString(), newParams);
     }
 
     /**
