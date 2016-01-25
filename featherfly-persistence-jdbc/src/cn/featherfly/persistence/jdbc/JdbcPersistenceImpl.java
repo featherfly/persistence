@@ -608,6 +608,65 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
         return findForLong(sql.toString(), conditionBuilder.getParams());
 
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T findForType(String sql, Class<T> type,
+            Map<String, Object> params) {
+        logger.debug("sql : {}", sql);
+        return namedParameterJdbcTemplate.queryForObject(sql, params,
+                type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T findForType(String sql, Class<T> type, Object[] params) {
+        logger.debug("sql : {}", sql);
+        return jdbcTemplate.queryForObject(sql, params,
+                type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T findForType(String sql, Class<T> type, List<Object> params) {
+        logger.debug("sql : {}", sql);
+        return findForType(sql, type, toArray(params));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> List<T> findForList(String sql, Class<T> type,
+            Map<String, Object> params) {
+        logger.debug("sql : {}", sql);
+        return namedParameterJdbcTemplate.queryForList(sql, params,
+                type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> List<T> findForList(String sql, Class<T> type, Object[] params) {
+        logger.debug("sql : {}", sql);
+        return jdbcTemplate.queryForList(sql, params,
+                type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> List<T> findForList(String sql, Class<T> type, List<Object> params) {
+        return findForList(sql, type, toArray(params));
+    }
 
     /**
      * {@inheritDoc}
@@ -1498,5 +1557,5 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements
             params = new ArrayList<Object>();
         }
         return params.toArray();
-    }
+    }    
 }

@@ -292,12 +292,72 @@ public interface JdbcPersistence extends PersistenceBatch{
 	 */
 	Long countForLong(String tableName, ConditionBuilder conditionBuilder);
 	/**
+     * <p>
+     * 查询唯一数据.（返回单列）
+     * </p>
+     * @param sql 查询sql
+     * @param params 参数
+     * @param type 返回的唯一值对象类型（简单对象）
+     * @return 对象
+     */
+	<T> T findForType(String sql, Class<T> type, Map<String, Object> params);
+    /**
+     * <p>
+     * 查询唯一数据.（返回单列）
+     * </p>
+     * @param sql 查询sql
+     * @param params 参数
+     * @param type 返回的唯一值对象类型（简单对象）
+     * @return 对象
+     */
+    <T> T findForType(String sql, Class<T> type, Object[] params);
+    /**
+     * <p>
+     * 查询唯一数据.（返回单列）
+     * </p>
+     * @param sql 查询sql
+     * @param params 参数
+     * @param type 返回的唯一值对象类型（简单对象）
+     * @return 对象
+     */
+    <T> T findForType(String sql, Class<T> type, List<Object> params);
+    /**
+     * <p>
+     * 查询单列数据列表
+     * </p>
+     * @param sql 查询sql
+     * @param params 参数
+     * @param type 返回的唯一值对象类型（简单对象）
+     * @return 列表
+     */
+    <T> List<T> findForList(String sql, Class<T> type, Map<String, Object> params);
+    /**
+     * <p>
+     * 查询单列数据列表
+     * </p>
+     * @param sql 查询sql
+     * @param params 参数
+     * @param type 返回的唯一值对象类型（简单对象）
+     * @return 列表
+     */
+    <T> List<T> findForList(String sql, Class<T> type, Object[] params);
+    /**
+     * <p>
+     * 查询单列数据列表.
+     * </p>
+     * @param sql 查询sql
+     * @param params 参数
+     * @param type 返回的唯一值对象类型（简单对象）
+     * @return 列表
+     */
+    <T> List<T> findForList(String sql, Class<T> type, List<Object> params);
+	/**
 	 * <p>
 	 * 查询唯一数据.
 	 * </p>
 	 * @param sql 查询sql
 	 * @param params 参数
-	 * @return 对象列表
+	 * @return Integer
 	 */
 	Integer findForInt(String sql, Map<String, Object> params);
 	/**
@@ -306,7 +366,7 @@ public interface JdbcPersistence extends PersistenceBatch{
 	 * </p>
 	 * @param sql 查询sql
 	 * @param params 参数
-	 * @return 对象列表
+	 * @return Integer
 	 */
 	Integer findForInt(String sql, Object[] params);
 	/**
@@ -315,7 +375,7 @@ public interface JdbcPersistence extends PersistenceBatch{
 	 * </p>
 	 * @param sql 查询sql
 	 * @param params 参数
-	 * @return 对象列表
+	 * @return Integer
 	 */
 	Integer findForInt(String sql, List<Object> params);
 	/**
