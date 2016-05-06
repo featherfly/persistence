@@ -21,18 +21,17 @@ sourceSets {
     }
 }
 
-ext {
-	compileDependencies =[
-    	'cn.featherfly:featherfly-common:latest.integration'
-    	,'cn.featherfly:featherfly-persistence:latest.integration'
-    	,'cn.featherfly:featherfly-sorm:latest.integration'
-    	,'org.springframework:spring-jdbc:4.1.6.RELEASE'
-    	,'org.springframework:spring-tx:4.1.6.RELEASE'
-		]
+ext {	
 }
 
 repositories {
 	mavenCentral()
+	maven {
+        url "http://192.168.203.241:8081/nexus/content/repositories/releases/"
+    }
+    maven {
+        url "http://192.168.203.241:8081/nexus/content/repositories/central/"
+    }
 	maven {
 		url  ant.properties['user.home'] +  "/.m2/repository"
 	}	
@@ -70,9 +69,11 @@ publishing {
 }
   
 dependencies {
-	for (def depend : compileDependencies)  {
-		compile (depend)
-	}
+	compile ('cn.featherfly:featherfly-common:1.5.1'
+        ,'cn.featherfly:featherfly-persistence:latest.integration'
+        ,'cn.featherfly:featherfly-sorm:latest.integration'
+        ,'org.springframework:spring-jdbc:4.1.6.RELEASE'
+        ,'org.springframework:spring-tx:4.1.6.RELEASE')
     testCompile (
     	'org.testng:testng:latest.integration'
     )

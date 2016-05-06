@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -998,14 +999,9 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     public PaginationResults<Map<String, Object>> findPage(String sql,
             int start, int limit, Map<String, Object> params) {
         checkStartAndLimit(start, limit);
-        SimplePagination<Map<String, Object>> pagination = new SimplePagination<Map<String, Object>>();
         List<Map<String, Object>> results = findList(sql, start, limit, params);
-        pagination.setPageResults(results);
-        pagination.setPageSize(limit);
-        pagination.setPageNumber((start + limit - 1) / limit);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        pagination.setTotal(total);
-        return pagination;
+        return createPaginationResults(start, limit, results, total);
     }
 
     /**
@@ -1035,15 +1031,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     @Override
     public PaginationResults<Map<String, Object>> findPage(String sql,
             int start, int limit, Object[] params) {
-        checkStartAndLimit(start, limit);
-        SimplePagination<Map<String, Object>> pagination = new SimplePagination<Map<String, Object>>();
-        List<Map<String, Object>> results = findList(sql, start, limit, params);
-        pagination.setPageResults(results);
-        pagination.setPageSize(limit);
-        pagination.setPageNumber((start + limit - 1) / limit);
+        checkStartAndLimit(start, limit);        
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        pagination.setTotal(total);
-        return pagination;
+        List<Map<String, Object>> results = findList(sql, start, limit, params);
+        return createPaginationResults(start, limit, results, total);        
     }
 
     /**
@@ -1192,14 +1183,9 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
             int start, int limit, Map<String, Object> params) {
         checkStartAndLimit(start, limit);
-        SimplePagination<E> pagination = new SimplePagination<E>();
         List<E> results = findList(sql, mappingType, start, limit, params);
-        pagination.setPageResults(results);
-        pagination.setPageSize(limit);
-        pagination.setPageNumber((start + limit - 1) / limit);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        pagination.setTotal(total);
-        return pagination;
+        return createPaginationResults(start, limit, results, total);
     }
 
     /**
@@ -1230,14 +1216,9 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
             int start, int limit, Object[] params) {
         checkStartAndLimit(start, limit);
-        SimplePagination<E> pagination = new SimplePagination<E>();
         List<E> results = findList(sql, mappingType, start, limit, params);
-        pagination.setPageResults(results);
-        pagination.setPageSize(limit);
-        pagination.setPageNumber((start + limit - 1) / limit);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        pagination.setTotal(total);
-        return pagination;
+        return createPaginationResults(start, limit, results, total);
     }
 
     /**
@@ -1374,14 +1355,9 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     public <E> PaginationResults<E> findPage(String sql, RowMapper<E> rowMapper,
             int start, int limit, Map<String, Object> params) {
         checkStartAndLimit(start, limit);
-        SimplePagination<E> pagination = new SimplePagination<E>();
         List<E> results = findList(sql, rowMapper, start, limit, params);
-        pagination.setPageResults(results);
-        pagination.setPageSize(limit);
-        pagination.setPageNumber((start + limit - 1) / limit);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        pagination.setTotal(total);
-        return pagination;
+        return createPaginationResults(start, limit, results, total);
     }
 
     /**
@@ -1417,14 +1393,9 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     public <E> PaginationResults<E> findPage(String sql, RowMapper<E> rowMapper,
             int start, int limit, Object[] params) {
         checkStartAndLimit(start, limit);
-        SimplePagination<E> pagination = new SimplePagination<E>();
         List<E> results = findList(sql, rowMapper, start, limit, params);
-        pagination.setPageResults(results);
-        pagination.setPageSize(limit);
-        pagination.setPageNumber((start + limit - 1) / limit);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        pagination.setTotal(total);
-        return pagination;
+        return createPaginationResults(start, limit, results, total);
     }
 
     /**
@@ -1593,13 +1564,25 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     }
 
     private <E> PaginationResults<E> createPaginationResults(
-            Iterable<E> results, Pagination pagination, Integer total) {
+            Collection<E> results, Pagination pagination, Integer total) {
         SimplePagination<E> paginationResult = new SimplePagination<E>();
         paginationResult.setPageResults(results);
         paginationResult.setPageSize(pagination.getPageSize());
         paginationResult.setPageNumber(pagination.getPageNumber());
         paginationResult.setTotal(total);
+        paginationResult.setResultSize(results.size());
         return paginationResult;
+    }
+    
+    private <R> SimplePagination<R> createPaginationResults(
+            int start, int limit, List<R> results, Integer total) {
+        SimplePagination<R> pagination = new SimplePagination<R>();
+        pagination.setPageResults(results);
+        pagination.setPageSize(limit);
+        pagination.setPageNumber((start + limit - 1) / limit);
+        pagination.setTotal(total);
+        pagination.setResultSize(results.size());
+        return pagination;
     }
 
     private Object[] toArray(List<Object> params) {
