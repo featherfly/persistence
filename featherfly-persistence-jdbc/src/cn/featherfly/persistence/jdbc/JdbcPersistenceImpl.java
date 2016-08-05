@@ -76,7 +76,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    protected <E> E doLoad(E entity) {
+    protected <E> E doLoad(E entity) {        
         if (entity != null) {
             return simpleORMFactory.getSimpleORM(
                     ClassUtils.castGenericType(entity.getClass(), entity))
@@ -207,8 +207,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
         if (entity == null) {
             return;
         }
-        E e = load(entity);
-        if (e == null) {
+        if (getIdentity(entity) == null || load(entity) == null) { 
             doSave(entity);
         } else {
             doMerge(entity);
@@ -236,8 +235,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
         if (entity == null) {
             return;
         }
-        E e = load(entity);
-        if (e == null) {
+        if (getIdentity(entity) == null || load(entity) == null) {
             doSave(entity);
         } else {
             doUpdate(entity);

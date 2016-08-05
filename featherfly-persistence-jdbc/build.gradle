@@ -69,7 +69,7 @@ publishing {
 }
   
 dependencies {
-	compile ('cn.featherfly:featherfly-common:1.5.1'
+	compile ('cn.featherfly:featherfly-common:latest.integration'
         ,'cn.featherfly:featherfly-persistence:latest.integration'
         ,'cn.featherfly:featherfly-sorm:latest.integration'
         ,'org.springframework:spring-jdbc:4.1.6.RELEASE'
