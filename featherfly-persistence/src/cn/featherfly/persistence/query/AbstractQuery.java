@@ -377,18 +377,6 @@ public abstract class AbstractQuery<Q extends AbstractQuery<Q, E>, E> implements
 
 	/**
 	 * <p>
-	 * 清楚排序条件
-	 * </p>
-	 * @return this
-	 */
-	@SuppressWarnings("unchecked")
-	public Q clearOrders() {
-		conditionBuilder.clearOrders();
-		return (Q) this;
-	}
-
-	/**
-	 * <p>
 	 * 添加降序条件到最前面
 	 * </p>
 	 * @param names 排序名称
@@ -399,6 +387,18 @@ public abstract class AbstractQuery<Q extends AbstractQuery<Q, E>, E> implements
 		conditionBuilder.descFirst(names);
 		return (Q) this;
 	}
+	
+	/**
+     * <p>
+     * 清楚排序条件
+     * </p>
+     * @return this
+     */
+    @SuppressWarnings("unchecked")
+    public Q clearOrders() {
+        conditionBuilder.clearOrders();
+        return (Q) this;
+    }
 
 	/**
 	 * 返回参数

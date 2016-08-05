@@ -25,6 +25,7 @@ sourceSets {
 ext {
 	compileDependencies =[
     	'cn.featherfly:featherfly-db:latest.integration'
+        ,'cn.featherfly:featherfly-common:latest.integration'
 		]
 }
 
