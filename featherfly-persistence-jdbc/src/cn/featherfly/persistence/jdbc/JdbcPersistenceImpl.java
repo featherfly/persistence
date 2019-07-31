@@ -2,10 +2,7 @@ package cn.featherfly.persistence.jdbc;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +20,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import cn.featherfly.common.db.PaginationWrapper;
 import cn.featherfly.common.db.SqlUtils;
 import cn.featherfly.common.db.builder.ConditionBuildUtils;
 import cn.featherfly.common.db.builder.ConditionBuilder;
@@ -32,6 +28,7 @@ import cn.featherfly.common.db.dialect.Dialect;
 import cn.featherfly.common.lang.ArrayUtils;
 import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.common.lang.LangUtils;
+import cn.featherfly.common.structure.page.Limit;
 import cn.featherfly.common.structure.page.Pagination;
 import cn.featherfly.common.structure.page.PaginationResults;
 import cn.featherfly.common.structure.page.SimplePagination;
@@ -43,19 +40,17 @@ import cn.featherfly.persistence.PersistentException;
  * <p>
  * jdbc持久化实现类
  * </p>
- * 
+ *
  * @author 钟冀
  */
-public class JdbcPersistenceImpl extends PersistenceObserver
-        implements JdbcPersistence {
+public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPersistence {
 
     /**
      */
     public JdbcPersistenceImpl() {
     }
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(JdbcPersistenceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcPersistenceImpl.class);
 
     // ********************************************************************
     // PersistenceObserver impl
@@ -67,7 +62,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     @Override
     protected <E> E doGet(Serializable id, Class<E> type) {
         if (id != null) {
-            return simpleORMFactory.getSimpleORM((Class<E>) type).get(id);
+            return simpleORMFactory.getSimpleORM(type).get(id);
         }
         return null;
     }
@@ -76,11 +71,9 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    protected <E> E doLoad(E entity) {        
+    protected <E> E doLoad(E entity) {
         if (entity != null) {
-            return simpleORMFactory.getSimpleORM(
-                    ClassUtils.castGenericType(entity.getClass(), entity))
-                    .load(entity);
+            return simpleORMFactory.getSimpleORM(ClassUtils.castGenericType(entity.getClass(), entity)).load(entity);
         }
         return null;
     }
@@ -89,18 +82,14 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * <p>
      * 删除. 具体的表名从传入对象类上的注解@Table的name属性获取 具体的条件以传入对象类属性上的标注了@Pk和@Column的name获取
      * </p>
-     * 
-     * @param <E>
-     *            对象类型
-     * @param entity
-     *            对象
+     *
+     * @param <E>    对象类型
+     * @param entity 对象
      */
     @Override
     protected <E> void doDelete(E entity) {
         if (entity != null) {
-            simpleORMFactory.getSimpleORM(
-                    ClassUtils.castGenericType(entity.getClass(), entity))
-                    .delete(entity);
+            simpleORMFactory.getSimpleORM(ClassUtils.castGenericType(entity.getClass(), entity)).delete(entity);
         }
     }
 
@@ -123,9 +112,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     @Override
     protected <E> void doMerge(E entity) {
         if (entity != null) {
-            simpleORMFactory.getSimpleORM(
-                    ClassUtils.castGenericType(entity.getClass(), entity))
-                    .merge(entity);
+            simpleORMFactory.getSimpleORM(ClassUtils.castGenericType(entity.getClass(), entity)).merge(entity);
         }
     }
 
@@ -146,18 +133,14 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * <p>
      * 插入，如果传入对象为null，忽略 将指定对象的值插入指定的表中， 具体的表名从传入对象类上的注解@Table的name属性获取
      * </p>
-     * 
-     * @param <E>
-     *            对象类型
-     * @param entity
-     *            对象
+     *
+     * @param <E>    对象类型
+     * @param entity 对象
      */
     @Override
     protected <E> void doPersist(E entity) {
         if (entity != null) {
-            simpleORMFactory.getSimpleORM(
-                    ClassUtils.castGenericType(entity.getClass(), entity))
-                    .save(entity);
+            simpleORMFactory.getSimpleORM(ClassUtils.castGenericType(entity.getClass(), entity)).save(entity);
         }
     }
 
@@ -180,9 +163,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     @Override
     protected <E> void doSave(E entity) {
         if (entity != null) {
-            simpleORMFactory.getSimpleORM(
-                    ClassUtils.castGenericType(entity.getClass(), entity))
-                    .save(entity);
+            simpleORMFactory.getSimpleORM(ClassUtils.castGenericType(entity.getClass(), entity)).save(entity);
         }
     }
 
@@ -207,7 +188,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
         if (entity == null) {
             return;
         }
-        if (getIdentity(entity) == null || load(entity) == null) { 
+        if (getIdentity(entity) == null || load(entity) == null) {
             doSave(entity);
         } else {
             doMerge(entity);
@@ -259,18 +240,14 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * <p>
      * 更新. 具体的表名从传入对象类上的注解@Table的name属性获取 具体的条件以传入对象类属性上的标注了@PK和@Column的name获取
      * </p>
-     * 
-     * @param <E>
-     *            对象类型
-     * @param entity
-     *            对象
+     *
+     * @param <E>    对象类型
+     * @param entity 对象
      */
     @Override
     protected <E> void doUpdate(E entity) {
         if (entity != null) {
-            simpleORMFactory.getSimpleORM(
-                    ClassUtils.castGenericType(entity.getClass(), entity))
-                    .update(entity);
+            simpleORMFactory.getSimpleORM(ClassUtils.castGenericType(entity.getClass(), entity)).update(entity);
         }
     }
 
@@ -332,10 +309,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public Number insert(String tableName, Object object,
-            String[] pkColumnNames) {
-        SimpleJdbcInsert jdbcInsert = getSimpleJdbcInsert(tableName,
-                pkColumnNames);
+    public Number insert(String tableName, Object object, String[] pkColumnNames) {
+        SimpleJdbcInsert jdbcInsert = getSimpleJdbcInsert(tableName, pkColumnNames);
         SqlParameterSource source = new BeanPropertySqlParameterSource(object);
         return jdbcInsert.executeAndReturnKey(source);
     }
@@ -344,13 +319,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public Number insert(String tableName, Object object,
-            List<String> pkColumnNames) {
+    public Number insert(String tableName, Object object, List<String> pkColumnNames) {
         if (pkColumnNames == null) {
-            pkColumnNames = new ArrayList<String>();
+            pkColumnNames = new ArrayList<>();
         }
-        return insert(tableName, object,
-                pkColumnNames.toArray(new String[] {}));
+        return insert(tableName, object, pkColumnNames.toArray(new String[] {}));
     }
 
     /**
@@ -367,10 +340,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public Number insert(String tableName, Map<String, Object> map,
-            String[] pkColumnNames) {
-        SimpleJdbcInsert jdbcInsert = getSimpleJdbcInsert(tableName,
-                pkColumnNames);
+    public Number insert(String tableName, Map<String, Object> map, String[] pkColumnNames) {
+        SimpleJdbcInsert jdbcInsert = getSimpleJdbcInsert(tableName, pkColumnNames);
         SqlParameterSource source = new MapSqlParameterSource(map);
         return jdbcInsert.executeAndReturnKey(source);
     }
@@ -379,8 +350,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public int update(String tableName, Map<String, Object> params,
-            Map<String, Object> conditions) {
+    public int update(String tableName, Map<String, Object> params, Map<String, Object> conditions) {
         StringBuilder sql = new StringBuilder();
         Map<String, Object> newParams = new HashMap<>();
         sql.append("update ").append(tableName);
@@ -431,14 +401,12 @@ public class JdbcPersistenceImpl extends PersistenceObserver
                 if (index > 0) {
                     sql.append(" and ");
                 }
-                sql.append(entry.getKey()).append(" = :")
-                        .append(entry.getKey());
+                sql.append(entry.getKey()).append(" = :").append(entry.getKey());
                 index++;
             }
         }
         logger.debug("sql : {}", sql);
-        return namedParameterJdbcTemplate.update(sql.toString(),
-                columnKeyAndValue);
+        return namedParameterJdbcTemplate.update(sql.toString(), columnKeyAndValue);
     }
 
     /**
@@ -496,8 +464,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> E find(String sql, Class<E> mappingType,
-            Map<String, Object> params) {
+    public <E> E find(String sql, Class<E> mappingType, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, params,
@@ -514,8 +481,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     public <E> E find(String sql, Class<E> mappingType, Object[] params) {
         logger.debug("sql : {}", sql);
         try {
-            return jdbcTemplate.queryForObject(sql,
-                    getParameterizedBeanPropertyRowMapper(mappingType), params);
+            return jdbcTemplate.queryForObject(sql, getParameterizedBeanPropertyRowMapper(mappingType), params);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -541,18 +507,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> E find(String sql, final RowMapper<E> rowMapper,
-            Map<String, Object> params) {
+    public <E> E find(String sql, final RowMapper<E> rowMapper, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, params,
-                    new org.springframework.jdbc.core.RowMapper<E>() {
-                        @Override
-                        public E mapRow(ResultSet rs, int rowNum)
-                                throws SQLException {
-                            return rowMapper.mapRow(rs, rowNum);
-                        }
-                    });
+                    (org.springframework.jdbc.core.RowMapper<E>) (rs, rowNum) -> rowMapper.mapRow(rs, rowNum));
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -562,18 +521,11 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> E find(String sql, final RowMapper<E> rowMapper,
-            Object[] params) {
+    public <E> E find(String sql, final RowMapper<E> rowMapper, Object[] params) {
         logger.debug("sql : {}", sql);
         try {
             return jdbcTemplate.queryForObject(sql,
-                    new org.springframework.jdbc.core.RowMapper<E>() {
-                        @Override
-                        public E mapRow(ResultSet rs, int rowNum)
-                                throws SQLException {
-                            return rowMapper.mapRow(rs, rowNum);
-                        }
-                    }, params);
+                    (org.springframework.jdbc.core.RowMapper<E>) (rs, rowNum) -> rowMapper.mapRow(rs, rowNum), params);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -591,8 +543,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public Integer countForInt(String tableName,
-            ConditionBuilder conditionBuilder) {
+    public Integer countForInt(String tableName, ConditionBuilder conditionBuilder) {
         conditionBuilder.setBuildWithWhere(true);
         conditionBuilder.setDialect(dialect);
         String condition = conditionBuilder.build();
@@ -607,8 +558,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public Long countForLong(String tableName,
-            ConditionBuilder conditionBuilder) {
+    public Long countForLong(String tableName, ConditionBuilder conditionBuilder) {
         conditionBuilder.setBuildWithWhere(true);
         conditionBuilder.setDialect(dialect);
         String condition = conditionBuilder.build();
@@ -624,8 +574,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <T> T findForType(String sql, Class<T> type,
-            Map<String, Object> params) {
+    public <T> T findForType(String sql, Class<T> type, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
         try {
             return namedParameterJdbcTemplate.queryForObject(sql, params, type);
@@ -660,8 +609,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <T> List<T> findForList(String sql, Class<T> type,
-            Map<String, Object> params) {
+    public <T> List<T> findForList(String sql, Class<T> type, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
         return namedParameterJdbcTemplate.queryForList(sql, params, type);
     }
@@ -679,8 +627,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <T> List<T> findForList(String sql, Class<T> type,
-            List<Object> params) {
+    public <T> List<T> findForList(String sql, Class<T> type, List<Object> params) {
         return findForList(sql, type, toArray(params));
     }
 
@@ -690,8 +637,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     @Override
     public Integer findForInt(String sql, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
-        return namedParameterJdbcTemplate.queryForObject(sql, params,
-                Integer.class);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
     }
 
     /**
@@ -700,7 +646,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     @Override
     public Integer findForInt(String sql, Object[] params) {
         logger.debug("sql : {}", sql);
-        try {         
+        try {
             return jdbcTemplate.queryForObject(sql, params, Integer.class);
         } catch (EmptyResultDataAccessException e) {
             return null;
@@ -721,9 +667,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     @Override
     public Long findForLong(String sql, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
-        try {            
-            return namedParameterJdbcTemplate.queryForObject(sql, params,
-                    Long.class);
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -736,7 +681,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     public Long findForLong(String sql, Object[] params) {
         logger.debug("sql : {}", sql);
         try {
-            return jdbcTemplate.queryForObject(sql, params, Long.class);            
+            return jdbcTemplate.queryForObject(sql, params, Long.class);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -754,12 +699,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public BigDecimal findForBigDecimal(String sql,
-            Map<String, Object> params) {
+    public BigDecimal findForBigDecimal(String sql, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
         try {
-            return namedParameterJdbcTemplate.queryForObject(sql, params,
-                    BigDecimal.class);
+            return namedParameterJdbcTemplate.queryForObject(sql, params, BigDecimal.class);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -792,9 +735,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     @Override
     public String findForString(String sql, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
-        try {            
-            return namedParameterJdbcTemplate.queryForObject(sql, params,
-                    String.class);
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sql, params, String.class);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -833,8 +775,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public List<Map<String, Object>> findList(String sql,
-            Map<String, Object> params) {
+    public List<Map<String, Object>> findList(String sql, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
         return namedParameterJdbcTemplate.queryForList(sql, params);
     }
@@ -860,61 +801,37 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public List<Map<String, Object>> findList(String sql, Pagination pagination,
+    public List<Map<String, Object>> findList(String sql, Pagination pagination, Map<String, Object> params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, limit.getOffset(), limit.getLimit(), params);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Map<String, Object>> findList(String sql, Pagination pagination, Object[] params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, limit.getOffset(), limit.getLimit(), params);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Map<String, Object>> findList(String sql, Pagination pagination, List<Object> params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, limit.getOffset(), limit.getLimit(), params);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PaginationResults<Map<String, Object>> findPage(String sql, Pagination pagination,
             Map<String, Object> params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<Map<String, Object>> wrapper = new PaginationWrapper<Map<String, Object>>(
-                pagination);
-        return findList(sql, wrapper.getStart(), wrapper.getLimit(), params);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Map<String, Object>> findList(String sql, Pagination pagination,
-            Object[] params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<Map<String, Object>> wrapper = new PaginationWrapper<Map<String, Object>>(
-                pagination);
-        return findList(sql, wrapper.getStart(), wrapper.getLimit(), params);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Map<String, Object>> findList(String sql, Pagination pagination,
-            List<Object> params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<Map<String, Object>> wrapper = new PaginationWrapper<Map<String, Object>>(
-                pagination);
-        return findList(sql, wrapper.getStart(), wrapper.getLimit(), params);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PaginationResults<Map<String, Object>> findPage(String sql,
-            Pagination pagination, Map<String, Object> params) {
         List<Map<String, Object>> list = findList(sql, pagination, params);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
         return createPaginationResults(list, pagination, total);
     }
 
@@ -922,8 +839,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public PaginationResults<Map<String, Object>> findPage(String sql,
-            Pagination pagination, Object[] params) {
+    public PaginationResults<Map<String, Object>> findPage(String sql, Pagination pagination, Object[] params) {
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
         // if (total != null) {
         // pagination.setTotal(total);
@@ -936,8 +852,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public PaginationResults<Map<String, Object>> findPage(String sql,
-            Pagination pagination, List<Object> params) {
+    public PaginationResults<Map<String, Object>> findPage(String sql, Pagination pagination, List<Object> params) {
         return findPage(sql, pagination, toArray(params));
     }
 
@@ -945,8 +860,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
-            Pagination pagination, Map<String, Object> params) {
+    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, Pagination pagination,
+            Map<String, Object> params) {
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
         // if (total != null) {
         // pagination.setTotal(total);
@@ -959,8 +874,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
-            Pagination pagination, Object[] params) {
+    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, Pagination pagination, Object[] params) {
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
         // if (total != null) {
         // pagination.setTotal(total);
@@ -973,8 +887,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
-            Pagination pagination, List<Object> params) {
+    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, Pagination pagination,
+            List<Object> params) {
         return findPage(sql, mappingType, pagination, toArray(params));
     }
 
@@ -982,11 +896,9 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public List<Map<String, Object>> findList(String sql, int start, int limit,
-            Map<String, Object> params) {
+    public List<Map<String, Object>> findList(String sql, int start, int limit, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
-        return namedParameterJdbcTemplate.queryForList(
-                dialect.getParamNamedPaginationSql(sql, start, limit),
+        return namedParameterJdbcTemplate.queryForList(dialect.getParamNamedPaginationSql(sql, start, limit),
                 dialect.getPaginationSqlParameter(params, start, limit));
     }
 
@@ -994,8 +906,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public PaginationResults<Map<String, Object>> findPage(String sql,
-            int start, int limit, Map<String, Object> params) {
+    public PaginationResults<Map<String, Object>> findPage(String sql, int start, int limit,
+            Map<String, Object> params) {
         checkStartAndLimit(start, limit);
         List<Map<String, Object>> results = findList(sql, start, limit, params);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
@@ -1006,11 +918,9 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public List<Map<String, Object>> findList(String sql, int start, int limit,
-            Object[] params) {
+    public List<Map<String, Object>> findList(String sql, int start, int limit, Object[] params) {
         logger.debug("sql : {}", sql);
-        return jdbcTemplate.queryForList(
-                dialect.getPaginationSql(sql, start, limit),
+        return jdbcTemplate.queryForList(dialect.getPaginationSql(sql, start, limit),
                 dialect.getPaginationSqlParameter(params, start, limit));
     }
 
@@ -1018,8 +928,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public List<Map<String, Object>> findList(String sql, int start, int limit,
-            List<Object> params) {
+    public List<Map<String, Object>> findList(String sql, int start, int limit, List<Object> params) {
         return findList(sql, start, limit, toArray(params));
     }
 
@@ -1027,20 +936,18 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public PaginationResults<Map<String, Object>> findPage(String sql,
-            int start, int limit, Object[] params) {
-        checkStartAndLimit(start, limit);        
+    public PaginationResults<Map<String, Object>> findPage(String sql, int start, int limit, Object[] params) {
+        checkStartAndLimit(start, limit);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
         List<Map<String, Object>> results = findList(sql, start, limit, params);
-        return createPaginationResults(start, limit, results, total);        
+        return createPaginationResults(start, limit, results, total);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public PaginationResults<Map<String, Object>> findPage(String sql,
-            int start, int limit, List<Object> params) {
+    public PaginationResults<Map<String, Object>> findPage(String sql, int start, int limit, List<Object> params) {
         return findPage(sql, start, limit, toArray(params));
     }
 
@@ -1048,8 +955,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(Class<E> mappingType,
-            ConditionBuilder builder) {
+    public <E> List<E> findList(Class<E> mappingType, ConditionBuilder builder) {
         builder.setDialect(dialect);
         return simpleORMFactory.getSimpleORM(mappingType).list(builder);
     }
@@ -1058,19 +964,15 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(Class<E> mappingType,
-            ConditionBuilder builder) {
+    public <E> PaginationResults<E> findPage(Class<E> mappingType, ConditionBuilder builder) {
         List<E> list = findList(mappingType, builder);
         // 查询完了以后把转换count语句的干扰去掉
         builder.clearOrders();
         builder.setDialect(dialect);
         Pagination p = builder.getPagination();
         builder.setPagination(null);
-        Execution execution = simpleORMFactory.getSimpleORM(mappingType)
-                .getQueryExecution(builder);
-        Integer total = findForInt(
-                SqlUtils.convertSelectToCount(execution.getSql()),
-                execution.getParams());
+        Execution execution = simpleORMFactory.getSimpleORM(mappingType).getQueryExecution(builder);
+        Integer total = findForInt(SqlUtils.convertSelectToCount(execution.getSql()), execution.getParams());
         return createPaginationResults(list, p, total);
     }
 
@@ -1086,30 +988,25 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType,
-            Map<String, Object> params) {
+    public <E> List<E> findList(String sql, Class<E> mappingType, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
-        return namedParameterJdbcTemplate.query(sql, params,
-                getParameterizedBeanPropertyRowMapper(mappingType));
+        return namedParameterJdbcTemplate.query(sql, params, getParameterizedBeanPropertyRowMapper(mappingType));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType,
-            Object[] params) {
+    public <E> List<E> findList(String sql, Class<E> mappingType, Object[] params) {
         logger.debug("sql : {}", sql);
-        return jdbcTemplate.query(sql,
-                getParameterizedBeanPropertyRowMapper(mappingType), params);
+        return jdbcTemplate.query(sql, getParameterizedBeanPropertyRowMapper(mappingType), params);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType,
-            List<Object> params) {
+    public <E> List<E> findList(String sql, Class<E> mappingType, List<Object> params) {
         return findList(sql, mappingType, toArray(params));
     }
 
@@ -1117,59 +1014,36 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType,
-            Pagination pagination, Map<String, Object> params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
-        return findList(sql, mappingType, wrapper.getStart(),
-                wrapper.getLimit(), params);
+    public <E> List<E> findList(String sql, Class<E> mappingType, Pagination pagination, Map<String, Object> params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, mappingType, limit.getOffset(), limit.getLimit(), params);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType,
-            Pagination pagination, Object[] params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
-        return findList(sql, mappingType, wrapper.getStart(),
-                wrapper.getLimit(), params);
+    public <E> List<E> findList(String sql, Class<E> mappingType, Pagination pagination, Object[] params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, mappingType, limit.getOffset(), limit.getLimit(), params);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType,
-            Pagination pagination, List<Object> params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
-        return findList(sql, mappingType, wrapper.getStart(),
-                wrapper.getLimit(), params);
+    public <E> List<E> findList(String sql, Class<E> mappingType, Pagination pagination, List<Object> params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, mappingType, limit.getOffset(), limit.getLimit(), params);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType, int start,
-            int limit, Map<String, Object> params) {
+    public <E> List<E> findList(String sql, Class<E> mappingType, int start, int limit, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
-        return namedParameterJdbcTemplate.query(
-                dialect.getParamNamedPaginationSql(sql, start, limit),
+        return namedParameterJdbcTemplate.query(dialect.getParamNamedPaginationSql(sql, start, limit),
                 dialect.getPaginationSqlParameter(params, start, limit),
                 getParameterizedBeanPropertyRowMapper(mappingType));
     }
@@ -1178,8 +1052,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
-            int start, int limit, Map<String, Object> params) {
+    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, int start, int limit,
+            Map<String, Object> params) {
         checkStartAndLimit(start, limit);
         List<E> results = findList(sql, mappingType, start, limit, params);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
@@ -1190,8 +1064,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType, int start,
-            int limit, Object[] params) {
+    public <E> List<E> findList(String sql, Class<E> mappingType, int start, int limit, Object[] params) {
         logger.debug("sql : {}", sql);
         return jdbcTemplate.query(dialect.getPaginationSql(sql, start, limit),
                 getParameterizedBeanPropertyRowMapper(mappingType),
@@ -1202,8 +1075,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, Class<E> mappingType, int start,
-            int limit, List<Object> params) {
+    public <E> List<E> findList(String sql, Class<E> mappingType, int start, int limit, List<Object> params) {
         return findList(sql, mappingType, start, limit, toArray(params));
     }
 
@@ -1211,8 +1083,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
-            int start, int limit, Object[] params) {
+    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, int start, int limit, Object[] params) {
         checkStartAndLimit(start, limit);
         List<E> results = findList(sql, mappingType, start, limit, params);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
@@ -1223,8 +1094,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType,
-            int start, int limit, List<Object> params) {
+    public <E> PaginationResults<E> findPage(String sql, Class<E> mappingType, int start, int limit,
+            List<Object> params) {
         return findPage(sql, mappingType, start, limit, toArray(params));
     }
 
@@ -1240,42 +1111,27 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, final RowMapper<E> rowMapper,
-            Map<String, Object> params) {
+    public <E> List<E> findList(String sql, final RowMapper<E> rowMapper, Map<String, Object> params) {
         logger.debug("sql : {}", sql);
         return namedParameterJdbcTemplate.query(sql, params,
-                new org.springframework.jdbc.core.RowMapper<E>() {
-                    @Override
-                    public E mapRow(ResultSet rs, int rowNum)
-                            throws SQLException {
-                        return rowMapper.mapRow(rs, rowNum);
-                    }
-                });
+                (org.springframework.jdbc.core.RowMapper<E>) (rs, rowNum) -> rowMapper.mapRow(rs, rowNum));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, final RowMapper<E> rowMapper,
-            Object[] params) {
+    public <E> List<E> findList(String sql, final RowMapper<E> rowMapper, Object[] params) {
         logger.debug("sql : {}", sql);
         return jdbcTemplate.query(sql,
-                new org.springframework.jdbc.core.RowMapper<E>() {
-                    @Override
-                    public E mapRow(ResultSet rs, int rowNum)
-                            throws SQLException {
-                        return rowMapper.mapRow(rs, rowNum);
-                    }
-                }, params);
+                (org.springframework.jdbc.core.RowMapper<E>) (rs, rowNum) -> rowMapper.mapRow(rs, rowNum), params);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, RowMapper<E> rowMapper,
-            List<Object> params) {
+    public <E> List<E> findList(String sql, RowMapper<E> rowMapper, List<Object> params) {
         return findList(sql, rowMapper, toArray(params));
     }
 
@@ -1283,75 +1139,47 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, RowMapper<E> rowMapper,
-            Pagination pagination, Map<String, Object> params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
-        return findList(sql, rowMapper, wrapper.getStart(), wrapper.getLimit(),
-                params);
+    public <E> List<E> findList(String sql, RowMapper<E> rowMapper, Pagination pagination, Map<String, Object> params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, rowMapper, limit.getOffset(), limit.getLimit(), params);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, RowMapper<E> rowMapper,
-            Pagination pagination, Object[] params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
-        return findList(sql, rowMapper, wrapper.getStart(), wrapper.getLimit(),
-                params);
+    public <E> List<E> findList(String sql, RowMapper<E> rowMapper, Pagination pagination, Object[] params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, rowMapper, limit.getOffset(), limit.getLimit(), params);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, RowMapper<E> rowMapper,
-            Pagination pagination, List<Object> params) {
-        // Integer total = findForInt(SqlUtils.convertSelectToCount(sql),
-        // params);
-        // if (total != null) {
-        // pagination.setTotal(total);
-        // }
-        PaginationWrapper<E> wrapper = new PaginationWrapper<E>(pagination);
-        return findList(sql, rowMapper, wrapper.getStart(), wrapper.getLimit(),
-                params);
+    public <E> List<E> findList(String sql, RowMapper<E> rowMapper, Pagination pagination, List<Object> params) {
+        Limit limit = new Limit(pagination);
+        return findList(sql, rowMapper, limit.getOffset(), limit.getLimit(), params);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, final RowMapper<E> rowMapper,
-            int start, int limit, Map<String, Object> params) {
+    public <E> List<E> findList(String sql, final RowMapper<E> rowMapper, int start, int limit,
+            Map<String, Object> params) {
         logger.debug("sql : {}", sql);
-        return namedParameterJdbcTemplate.query(
-                dialect.getParamNamedPaginationSql(sql, start, limit),
+        return namedParameterJdbcTemplate.query(dialect.getParamNamedPaginationSql(sql, start, limit),
                 dialect.getPaginationSqlParameter(params, start, limit),
-                new org.springframework.jdbc.core.RowMapper<E>() {
-                    @Override
-                    public E mapRow(ResultSet rs, int rowNum)
-                            throws SQLException {
-                        return rowMapper.mapRow(rs, rowNum);
-                    }
-                });
+                (org.springframework.jdbc.core.RowMapper<E>) (rs, rowNum) -> rowMapper.mapRow(rs, rowNum));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, RowMapper<E> rowMapper,
-            int start, int limit, Map<String, Object> params) {
+    public <E> PaginationResults<E> findPage(String sql, RowMapper<E> rowMapper, int start, int limit,
+            Map<String, Object> params) {
         checkStartAndLimit(start, limit);
         List<E> results = findList(sql, rowMapper, start, limit, params);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
@@ -1362,25 +1190,18 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, final RowMapper<E> rowMapper,
-            int start, int limit, Object[] params) {
+    public <E> List<E> findList(String sql, final RowMapper<E> rowMapper, int start, int limit, Object[] params) {
         logger.debug("sql : {}", sql);
         return jdbcTemplate.query(dialect.getPaginationSql(sql, start, limit),
-                new org.springframework.jdbc.core.RowMapper<E>() {
-                    @Override
-                    public E mapRow(ResultSet rs, int rowNum)
-                            throws SQLException {
-                        return rowMapper.mapRow(rs, rowNum);
-                    }
-                }, dialect.getPaginationSqlParameter(params, start, limit));
+                (org.springframework.jdbc.core.RowMapper<E>) (rs, rowNum) -> rowMapper.mapRow(rs, rowNum),
+                dialect.getPaginationSqlParameter(params, start, limit));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <E> List<E> findList(String sql, RowMapper<E> rowMapper, int start,
-            int limit, List<Object> params) {
+    public <E> List<E> findList(String sql, RowMapper<E> rowMapper, int start, int limit, List<Object> params) {
         return findList(sql, rowMapper, start, limit, toArray(params));
     }
 
@@ -1388,8 +1209,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, RowMapper<E> rowMapper,
-            int start, int limit, Object[] params) {
+    public <E> PaginationResults<E> findPage(String sql, RowMapper<E> rowMapper, int start, int limit,
+            Object[] params) {
         checkStartAndLimit(start, limit);
         List<E> results = findList(sql, rowMapper, start, limit, params);
         Integer total = findForInt(SqlUtils.convertSelectToCount(sql), params);
@@ -1400,8 +1221,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      * {@inheritDoc}
      */
     @Override
-    public <E> PaginationResults<E> findPage(String sql, RowMapper<E> rowMapper,
-            int start, int limit, List<Object> params) {
+    public <E> PaginationResults<E> findPage(String sql, RowMapper<E> rowMapper, int start, int limit,
+            List<Object> params) {
         return findPage(sql, rowMapper, start, limit, toArray(params));
     }
 
@@ -1410,10 +1231,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
      */
     @Override
     public <E> Serializable getIdentity(E entity) {
-        return simpleORMFactory
-                .getSimpleORM(
-                        ClassUtils.castGenericType(entity.getClass(), entity))
-                .getIdentity(entity);
+        return simpleORMFactory.getSimpleORM(ClassUtils.castGenericType(entity.getClass(), entity)).getIdentity(entity);
     }
 
     // ********************************************************************
@@ -1428,40 +1246,29 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     // return rowMapper;
     // }
 
-    private <E> org.springframework.jdbc.core.RowMapper<E> getParameterizedBeanPropertyRowMapper(
-            Class<E> mappingType) {
-        final BeanPropertyRowMapper<E> mapper = new BeanPropertyRowMapper<>(
-                mappingType);
-        return new org.springframework.jdbc.core.RowMapper<E>() {
-            @Override
-            public E mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return mapper.mapRow(rs, rowNum);
-            }
-        };
+    private <E> org.springframework.jdbc.core.RowMapper<E> getParameterizedBeanPropertyRowMapper(Class<E> mappingType) {
+        final BeanPropertyRowMapper<E> mapper = new BeanPropertyRowMapper<>(mappingType);
+        return (rs, rowNum) -> mapper.mapRow(rs, rowNum);
     }
 
     // 获取指定表名称的insert
     private SimpleJdbcInsert getSimpleJdbcInsert(String tableName) {
         SimpleJdbcInsert jdbcInsert = simpleJdbcInserts.get(tableName);
         if (jdbcInsert == null) {
-            jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                    .withTableName(tableName);
+            jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(tableName);
             simpleJdbcInserts.put(tableName, jdbcInsert);
         }
         return jdbcInsert;
     }
 
     // 获取指定表名称主键列名的insert
-    private SimpleJdbcInsert getSimpleJdbcInsert(String tableName,
-            String... pkColumnNames) {
+    private SimpleJdbcInsert getSimpleJdbcInsert(String tableName, String... pkColumnNames) {
         SimpleJdbcInsert jdbcInsert = getSimpleJdbcInsert(tableName);
         if (LangUtils.isEmpty(jdbcInsert.getGeneratedKeyNames())) {
-            logger.debug("表{}设置主键列{}", tableName,
-                    ArrayUtils.toString(pkColumnNames));
+            logger.debug("表{}设置主键列{}", tableName, ArrayUtils.toString(pkColumnNames));
             jdbcInsert.usingGeneratedKeyColumns(pkColumnNames);
         } else {
-            logger.debug("表{}已经设置了主键列{}，新的设置被忽略", tableName,
-                    ArrayUtils.toString(pkColumnNames));
+            logger.debug("表{}已经设置了主键列{}，新的设置被忽略", tableName, ArrayUtils.toString(pkColumnNames));
         }
         return jdbcInsert;
     }
@@ -1492,12 +1299,10 @@ public class JdbcPersistenceImpl extends PersistenceObserver
 
     private SimpleORMFactory simpleORMFactory;
 
-    private Map<String, SimpleJdbcInsert> simpleJdbcInserts = new HashMap<String, SimpleJdbcInsert>(
-            0);
+    private Map<String, SimpleJdbcInsert> simpleJdbcInserts = new HashMap<>(0);
 
     /**
-     * @param dialect
-     *            设置dialect
+     * @param dialect 设置dialect
      */
     public void setDialect(Dialect dialect) {
         this.dialect = dialect;
@@ -1526,8 +1331,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver
     }
 
     /**
-     * @param dataSource
-     *            设置dataSource
+     * @param dataSource 设置dataSource
      */
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -1536,14 +1340,13 @@ public class JdbcPersistenceImpl extends PersistenceObserver
         if (simpleORMFactory == null) {
             simpleORMFactory = new SimpleORMFactory(this.dataSource);
         }
-        this.simpleORMFactory.setDataSource(dataSource);
+        simpleORMFactory.setDataSource(dataSource);
     }
 
     /**
      * 设置simpleORMFactory
-     * 
-     * @param simpleORMFactory
-     *            simpleORMFactory
+     *
+     * @param simpleORMFactory simpleORMFactory
      */
     public void setSimpleORMFactory(SimpleORMFactory simpleORMFactory) {
         this.simpleORMFactory = simpleORMFactory;
@@ -1554,38 +1357,34 @@ public class JdbcPersistenceImpl extends PersistenceObserver
 
     /**
      * 返回simpleORMFactory
-     * 
+     *
      * @return simpleORMFactory
      */
     public SimpleORMFactory getSimpleORMFactory() {
         return simpleORMFactory;
     }
 
-    private <E> PaginationResults<E> createPaginationResults(
-            Collection<E> results, Pagination pagination, Integer total) {
-        SimplePagination<E> paginationResult = new SimplePagination<E>();
+    private <E> PaginationResults<E> createPaginationResults(List<E> results, Pagination pagination, Integer total) {
+        SimplePagination<E> paginationResult = new SimplePagination<>();
         paginationResult.setPageResults(results);
         paginationResult.setPageSize(pagination.getPageSize());
         paginationResult.setPageNumber(pagination.getPageNumber());
         paginationResult.setTotal(total);
-        paginationResult.setResultSize(results.size());
         return paginationResult;
     }
-    
-    private <R> SimplePagination<R> createPaginationResults(
-            int start, int limit, List<R> results, Integer total) {
-        SimplePagination<R> pagination = new SimplePagination<R>();
+
+    private <R> SimplePagination<R> createPaginationResults(int start, int limit, List<R> results, Integer total) {
+        SimplePagination<R> pagination = new SimplePagination<>();
         pagination.setPageResults(results);
         pagination.setPageSize(limit);
         pagination.setPageNumber((start + limit - 1) / limit);
         pagination.setTotal(total);
-        pagination.setResultSize(results.size());
         return pagination;
     }
 
     private Object[] toArray(List<Object> params) {
         if (params == null) {
-            params = new ArrayList<Object>();
+            params = new ArrayList<>();
         }
         return params.toArray();
     }
