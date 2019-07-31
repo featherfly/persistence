@@ -57,9 +57,7 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
      * Create a new BeanPropertyRowMapper, accepting unpopulated properties in
      * the target bean.
      * <p>
-     * Consider using the {@link #newInstance} factory method instead, which
-     * allows for specifying the mapped type once only.
-     * 
+     *
      * @param mappedClass the class that each row should be mapped to
      */
     public BeanPropertyRowMapper(Class<T> mappedClass) {
@@ -68,7 +66,7 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
 
     /**
      * Create a new BeanPropertyRowMapper.
-     * 
+     *
      * @param mappedClass         the class that each row should be mapped to
      * @param checkFullyPopulated whether we're strictly validating that all
      *                            bean properties have been mapped from
@@ -81,7 +79,7 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
 
     /**
      * Initialize the mapping metadata for the given class.
-     * 
+     *
      * @param mappedClass the mapped class.
      */
     protected void initialize(Class<T> mappedClass) {
@@ -105,7 +103,7 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
      * Convert a name in camelCase to an underscored name in lower case. Any
      * upper case letters are converted to lower case with a preceding
      * underscore.
-     * 
+     *
      * @param name the string containing original name
      * @return the converted name
      */
@@ -176,7 +174,7 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
      * Extract the values for all columns in the current row.
      * <p>
      * Utilizes public setters and result set metadata.
-     * 
+     *
      * @see java.sql.ResultSetMetaData
      */
     @Override
@@ -262,7 +260,7 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
      * for each row.
      * <p>
      * The default implementation is empty. Can be overridden in subclasses.
-     * 
+     *
      * @param bw the BeanWrapper to initialize
      */
     protected void initBeanWrapper(BeanWrapper bw) {
@@ -275,7 +273,7 @@ public class BeanPropertyRowMapper<T> implements RowMapper<T> {
      * {@link JdbcUtils#getResultSetValue(java.sql.ResultSet, int, Class)}.
      * Subclasses may override this to check specific value types upfront, or to
      * post-process values return from {@code getResultSetValue}.
-     * 
+     *
      * @param rs    is the ResultSet holding the data
      * @param index is the column index
      * @param pd    the bean property that each result object is expected to
