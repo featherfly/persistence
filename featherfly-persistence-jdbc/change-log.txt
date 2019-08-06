@@ -1,5 +1,8 @@
 // 下一步加入TableQuery对象
 
+2019- 1.4.1
+    1.升级spring
+
 2019-7-31 1.4.0
     1.升级featherfly-common和featherfly-db
 
