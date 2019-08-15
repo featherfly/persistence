@@ -31,7 +31,7 @@ import cn.featherfly.common.lang.LangUtils;
 import cn.featherfly.common.structure.page.Limit;
 import cn.featherfly.common.structure.page.Pagination;
 import cn.featherfly.common.structure.page.PaginationResults;
-import cn.featherfly.common.structure.page.SimplePagination;
+import cn.featherfly.common.structure.page.SimplePaginationResults;
 import cn.featherfly.component.sorm.SimpleORMFactory;
 import cn.featherfly.persistence.PersistenceObserver;
 import cn.featherfly.persistence.PersistentException;
@@ -1365,7 +1365,7 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
     }
 
     private <E> PaginationResults<E> createPaginationResults(List<E> results, Pagination pagination, Integer total) {
-        SimplePagination<E> paginationResult = new SimplePagination<>();
+        SimplePaginationResults<E> paginationResult = new SimplePaginationResults<>();
         paginationResult.setPageResults(results);
         paginationResult.setPageSize(pagination.getPageSize());
         paginationResult.setPageNumber(pagination.getPageNumber());
@@ -1373,8 +1373,8 @@ public class JdbcPersistenceImpl extends PersistenceObserver implements JdbcPers
         return paginationResult;
     }
 
-    private <R> SimplePagination<R> createPaginationResults(int start, int limit, List<R> results, Integer total) {
-        SimplePagination<R> pagination = new SimplePagination<>();
+    private <R> PaginationResults<R> createPaginationResults(int start, int limit, List<R> results, Integer total) {
+        SimplePaginationResults<R> pagination = new SimplePaginationResults<>();
         pagination.setPageResults(results);
         pagination.setPageSize(limit);
         pagination.setPageNumber((start + limit - 1) / limit);

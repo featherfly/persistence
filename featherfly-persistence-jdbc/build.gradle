@@ -20,7 +20,7 @@ dependencies {
                 exclude group : 'cn.featherfly', module : 'featherfly-db'
             }
 	compile ('cn.featherfly:featherfly-common:latest.integration'
-	    ,'cn.featherfly:featherfly-db:1.5.0'
+	    ,'cn.featherfly:featherfly-db:latest.integration'
         ,'org.springframework:spring-jdbc:5.1.8.RELEASE'
         ,'org.springframework:spring-tx:5.1.8.RELEASE')
     testCompile (
