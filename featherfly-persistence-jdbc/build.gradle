@@ -10,16 +10,14 @@ sourceSets {
 }
   
 dependencies {
-    compile ('cn.featherfly:featherfly-sorm:latest.integration') {
-                exclude group : 'cn.featherfly', module : 'featherfly-db'
-            }
-    compile ('cn.featherfly:featherfly-persistence:latest.integration') {
-                exclude group : 'cn.featherfly', module : 'featherfly-db'
-            }
+    compile 'cn.featherfly:featherfly-persistence:1.2.2'
+    compile 'cn.featherfly:featherfly-sorm:1.3.9'
+    /*
 	compile ('cn.featherfly:featherfly-common:1.7.4'
 	    ,'cn.featherfly:featherfly-db:1.5.2'
         ,'org.springframework:spring-jdbc:5.1.8.RELEASE'
         ,'org.springframework:spring-tx:5.1.8.RELEASE')
+    */
         
     testCompile 'org.testng:testng:6.14.3'
 }
