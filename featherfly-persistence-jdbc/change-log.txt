@@ -1,5 +1,9 @@
 // 下一步加入TableQuery对象
 
+2019-12-03 
+1.4.2
+    1.升级依赖
+
 2019-8-15 1.4.1
     1.升级spring
     2.升级featherfly-common和featherfly-db并修复问题
